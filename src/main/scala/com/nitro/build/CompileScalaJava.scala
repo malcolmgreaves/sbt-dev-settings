@@ -10,6 +10,23 @@ object CompileScalaJava {
 
   import JvmRuntime.{ JvmVersion, defaultJvmVersion }
 
+  case class Config(
+    jvmVer:          JvmVersion,
+    fatalWarnings:   Boolean,
+    formatOnCompile: Boolean
+  )
+
+  object Config {
+
+    val default: Config =
+      Config(
+        jvmVer = defaultJvmVersion,
+        fatalWarnings = true,
+        formatOnCompile = false
+      )
+
+  }
+
   private[this] val ver210 = "2.10.5"
 
   private[this] val ver211 = "2.11.7"
@@ -32,33 +49,29 @@ object CompileScalaJava {
   /**
    * Settings for doing plugin development (scala 2.10 with base settings).
    */
-  def pluginSettings(jvmVer: JvmVersion = defaultJvmVersion) =
-    settings(jvmVer) ++ scala210
+  def pluginSettings(c: Config = Config.default) =
+    settings(c, isScala211 = false) ++ scala210
 
   /**
    * Settings for doing library or application development
    * (scala 2.11 with base settings and cross-compilation to 2.10).
    */
-  def librarySettings(jvmVer: JvmVersion = defaultJvmVersion) =
-    settings(jvmVer) ++ scala211 ++ crossCompile
+  def librarySettings(c: Config = Config.default) =
+    settings(c, isScala211 = true) ++ scala211 ++ crossCompile
 
   /**
    * Obtain settings for scalac and javac.
    * Also sets the incremental compilation settings to use name hashing.
    */
-  def settings(
-    jvmVer:          JvmVersion = defaultJvmVersion,
-    fatalWarnings:   Boolean    = true,
-    formatOnCompile: Boolean    = false
-  ) = {
+  def settings(c: Config, isScala211: Boolean) = {
 
-    val fmt = CodeFormat.settings(formatOnCompile)
+    val fmt = CodeFormat.settings(c.formatOnCompile)
     val java =
       Seq(
-        javacOptions ++= javacSettings(jvmVer),
+        javacOptions ++= javacSettings(c.jvmVer),
         incOptions := incOptions.value.withNameHashing(nameHashing = true)
       )
-    val scala = scalacSettings(jvmVer, fatalWarnings)
+    val scala = scalacSettings(c.jvmVer, c.fatalWarnings, logImplicits = false, isScala211)
 
     fmt ++ java ++ scala
   }
