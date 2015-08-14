@@ -19,7 +19,7 @@ object Publish {
   def settings(
     repo:       Repository,
     developers: Seq[Dev],
-    art:        Artifact,
+    art:        ArtifactInfo,
     lic:        License
   ) =
     Seq(

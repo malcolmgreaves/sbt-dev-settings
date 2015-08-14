@@ -41,18 +41,18 @@ object PublishHelpers {
    * Contains the location of the Maven-like jar repository as well as whether
    * or not to publish as a release (otherwise it's a snapshot).
    */
-  case class Artifact(
+  case class ArtifactInfo(
     location:  Url,
     isRelease: Boolean
   )
 
-  object Artifact {
+  object ArtifactInfo {
 
     /**
      * An Artifact instance that is useful for pushing releases to Sonatype.
      */
     val sonatype =
-      Artifact(
+      ArtifactInfo(
         location = "https://oss.sonatype.org/",
         isRelease = true
       )
