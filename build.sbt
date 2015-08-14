@@ -11,6 +11,16 @@ description := "sbt plugin for standardizing compilation, packaing, formatting, 
 // sbt plugins must be at Scala 2.10.x
 scalaVersion := "2.10.5"
 
+// dependices for this plugin
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.4")
+
+// publish settings
+
 publishMavenStyle := true
 
 publishTo := {
