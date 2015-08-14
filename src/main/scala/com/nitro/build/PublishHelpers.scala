@@ -13,7 +13,7 @@ object PublishHelpers {
    *
    * For example, if the repository is on Github, then `id` is the username.
    */
-  case class Developer(id: String, name: String)
+  case class Dev(id: String, name: String)
 
   /**
    * Contains the name and group for a git repoistory.

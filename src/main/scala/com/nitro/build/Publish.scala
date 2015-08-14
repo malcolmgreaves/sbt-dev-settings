@@ -18,7 +18,7 @@ object Publish {
    */
   def settings(
     repo:       Repository,
-    developers: Seq[Developer],
+    developers: Seq[Dev],
     art:        Artifact,
     lic:        License
   ) =
@@ -55,7 +55,7 @@ object Publish {
   /**
    * Create the XML for properly attributing a developer.
    */
-  def developerXml(repo: Repository)(dev: Developer) =
+  def developerXml(repo: Repository)(dev: Dev) =
     <developer>
       <id>${ dev.id }</id>
       <name>${ dev.name }</name>
