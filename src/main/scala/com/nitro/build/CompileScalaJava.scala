@@ -25,6 +25,9 @@ object CompileScalaJava {
         formatOnCompile = false
       )
 
+    val spark: Config =
+      default.copy(jvmVer = JvmRuntime.Jvm7)
+
   }
 
   private[this] val ver210 = "2.10.5"
