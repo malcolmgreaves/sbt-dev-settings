@@ -1,12 +1,12 @@
 organization := "com.gonitro.platform"
 
-name := "sbt-nitro-dev-settings"
+name := "sbt-dev-settings"
 
 version := "0.0.1"
 
 sbtPlugin := true
 
-description := "sbt plugin for standard build configurations."
+description := "sbt plugin for standardizing compilation, packaing, formatting, and publishing configurations"
 
 // sbt plugins must be at Scala 2.10.x
 scalaVersion := "2.10.5"
@@ -28,7 +28,7 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/malcolmgreaves/sbt-nitro-dev-settings</url>
+  <url>https://github.com/malcolmgreaves/sbt-dev-settings</url>
   <licenses>
     <license>
       <name>Apache 2.0</name>
@@ -37,14 +37,19 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <url>git@github.com:malcolmgreaves/sbt-nitro-dev-settings</url>
-    <connection>scm:git:git@github.com:malcolmgreaves/sbt-nitro-dev-settings.git</connection>
+    <url>git@github.com:malcolmgreaves/sbt-dev-settings</url>
+    <connection>scm:git:git@github.com:malcolmgreaves/sbt-dev-settings.git</connection>
   </scm>
   <developers>
     <developer>
       <id>malcolmgreaves</id>
       <name>Malcolm Greaves</name>
       <url>https://github.com/malcolmgreaves</url>
+    </developer>
+    <developer>
+      <id>gregsilin</id>
+      <name>Greg Silin</name>
+      <url>https://github.com/gregsilin</url>
     </developer>
   </developers>
 )
