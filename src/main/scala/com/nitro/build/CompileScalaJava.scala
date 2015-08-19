@@ -10,10 +10,17 @@ object CompileScalaJava {
 
   import JvmRuntime.{ JvmVersion, defaultJvmVersion }
 
+  sealed trait IncCompileV
+  case object NameHash extends IncCompileV
+  case object UseMacro extends IncCompileV
+
   case class Config(
     jvmVer:          JvmVersion,
     fatalWarnings:   Boolean,
-    formatOnCompile: Boolean
+    formatOnCompile: Boolean,
+    isScala211:      Boolean,
+    logImplicits:    Boolean,
+    inc:             Option[IncCompileV]
   )
 
   object Config {
@@ -22,11 +29,23 @@ object CompileScalaJava {
       Config(
         jvmVer = defaultJvmVersion,
         fatalWarnings = true,
-        formatOnCompile = false
+        formatOnCompile = false,
+        isScala211 = true,
+        logImplicits = false,
+        inc = Some(NameHash)
       )
+
+    val strict: Config =
+      default.copy(fatalWarnings = true)
 
     val spark: Config =
       default.copy(jvmVer = JvmRuntime.Jvm7)
+
+    val macroWork: Config =
+      default.copy(inc = Some(UseMacro))
+
+    val plugin: Config =
+      default.copy(isScala211 = false)
 
   }
 
@@ -52,29 +71,53 @@ object CompileScalaJava {
   /**
    * Settings for doing plugin development (scala 2.10 with base settings).
    */
-  def pluginSettings(c: Config = Config.default) =
-    settings(c, isScala211 = false) ++ scala210
+  def pluginSettings(c: Config = Config.plugin) =
+    settings(c) ++ scala210
 
   /**
    * Settings for doing library or application development
    * (scala 2.11 with base settings and cross-compilation to 2.10).
    */
   def librarySettings(c: Config = Config.default) =
-    settings(c, isScala211 = true) ++ scala211 ++ crossCompile
+    settings(c) ++ {
+      if (c.isScala211)
+        scala211 ++ crossCompile
+      else
+        scala210
+    }
 
   /**
    * Obtain settings for scalac and javac.
    * Also sets the incremental compilation settings to use name hashing.
    */
-  def settings(c: Config, isScala211: Boolean) = {
+  def settings(c: Config) = {
 
-    val fmt = CodeFormat.settings(c.formatOnCompile)
+    val fmt =
+      CodeFormat.settings(c.formatOnCompile)
+
     val java =
-      Seq(
-        javacOptions ++= javacSettings(c.jvmVer),
-        incOptions := incOptions.value.withNameHashing(nameHashing = true)
-      )
-    val scala = scalacSettings(c.jvmVer, c.fatalWarnings, logImplicits = false, isScala211)
+      Seq(javacOptions ++= javacSettings(c.jvmVer))
+
+    val incCompile =
+      Seq(incOptions := {
+        c.inc match {
+          case Some(x) =>
+            x match {
+
+              case UseMacro =>
+                incOptions.value.withRecompileOnMacroDef(true)
+
+              case NameHash =>
+                incOptions.value.withNameHashing(true)
+            }
+
+          case None =>
+            incOptions.value
+        }
+      })
+
+    val scala =
+      scalacSettings(c.jvmVer, c.fatalWarnings, c.logImplicits, c.isScala211)
 
     fmt ++ java ++ scala
   }
