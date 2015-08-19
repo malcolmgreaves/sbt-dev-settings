@@ -171,8 +171,10 @@ object CompileScalaJava {
     scalacOptions := options
       // Emit a warning if the inferred type of something is `Any`
       .addOption(c.scala.isScala211, "-Ywarn-infer-any")
-      // Output optimized bytecode
-      .addOption(c.scala.optimize, "-optimize", "-Yopt:_")
+      // Output optimized bytecode (include all under -Yopt iff 2.11.x)
+      .addOption(c.scala.optimize && c.scala.isScala211, "-optimize", "-Yopt:_")
+      // Output optimized bytecode (iff using 2.10.x)
+      .addOption(c.scala.optimize && !c.scala.isScala211, "-optimize")
       // turn all warnings into errors
       .addOption(c.scala.fatalWarnings, "-Xfatal-warnings")
       // during compilation, emit a logging message whenver an
