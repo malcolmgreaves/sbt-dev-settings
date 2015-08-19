@@ -162,8 +162,6 @@ object CompileScalaJava {
         "-Yno-adapted-args",
         // Emit warnings when dead code is detected
         "-Ywarn-dead-code",
-        // Emit a warning if the inferred type of something is `Any`
-        "-Ywarn-infer-any",
         // Emit warnings when non-unit values are discarded
         "-Ywarn-value-discard",
         // Emit warnings when things tagged @inline cannot be inlined
@@ -171,6 +169,8 @@ object CompileScalaJava {
       )
 
     scalacOptions := options
+      // Emit a warning if the inferred type of something is `Any`
+      .addOption(c.scala.isScala211, "-Ywarn-infer-any")
       // Output optimized bytecode
       .addOption(c.scala.optimize, "-optimize", "-Yopt:_")
       // turn all warnings into errors
