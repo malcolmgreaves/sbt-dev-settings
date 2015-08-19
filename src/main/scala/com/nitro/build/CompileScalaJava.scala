@@ -96,7 +96,7 @@ object CompileScalaJava {
       CodeFormat.settings(c.formatOnCompile)
 
     val java =
-      Seq(javacOptions ++= javacSettings(c.jvmVer))
+      Seq(javacOptions ++= javacSettings(c))
 
     val incCompile =
       Seq(incOptions := {
@@ -117,18 +117,20 @@ object CompileScalaJava {
       })
 
     val scala =
-      scalacSettings(c.jvmVer, c.fatalWarnings, c.logImplicits, c.isScala211)
+      scalacSettings(c)
 
-    fmt ++ java ++ scala
+    // use all !
+
+    fmt ++ java ++ incCompile ++ scala
   }
 
   /**
    * Yield the correct -source and -target settings for the given JVM version.
    */
-  def javacSettings(jvmVer: JvmVersion = defaultJvmVersion): Seq[String] =
+  def javacSettings(c: Config = Config.default): Seq[String] =
     Seq(
-      "-source", jvmVer.short,
-      "-target", jvmVer.short
+      "-source", c.jvmVer.short,
+      "-target", c.jvmVer.short
     )
 
   /**
@@ -136,12 +138,7 @@ object CompileScalaJava {
    * and whether or not things like fatalWarnings and logging of implicit
    * conversions / classes are done during compilation.
    */
-  def scalacSettings(
-    jvmVer:        JvmVersion = defaultJvmVersion,
-    fatalWarnings: Boolean    = true,
-    logImplicits:  Boolean    = false,
-    isScala211:    Boolean    = false
-  ): Seq[Def.Setting[_]] = {
+  def scalacSettings(c: Config = Config.default): Seq[Def.Setting[_]] = {
 
     val options =
       Seq(
@@ -159,7 +156,7 @@ object CompileScalaJava {
         // Output optimized bytecode
         "-optimize",
         // Output bytecode specific to the given JVM version
-        s"-target:jvm-${jvmVer.short}",
+        s"-target:jvm-${c.jvmVer.short}",
         // Warn on unchecked stuff
         "-unchecked",
         // Run the source code linter
@@ -181,13 +178,13 @@ object CompileScalaJava {
 
     scalacOptions := options
       // turn all warnings into errors
-      .addOption(fatalWarnings, "-Xfatal-warnings")
+      .addOption(c.fatalWarnings, "-Xfatal-warnings")
       // during compilation, emit a logging message whenver an
       // implicit conversion or class is used
-      .addOption(logImplicits, "-Xlog-implicits")
+      .addOption(c.logImplicits, "-Xlog-implicits")
       // use an optimized bytecode generator
       // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
-      .addOption(isScala211, "-Ybackend:GenBCode")
+      .addOption(c.isScala211, "-Ybackend:GenBCode")
   }
 
   /**
