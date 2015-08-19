@@ -10,13 +10,6 @@ object CompileScalaJava {
 
   import JvmRuntime.{ JvmVersion, defaultJvmVersion }
 
-  case class Config(
-    jvmVer:          JvmVersion,
-    formatOnCompile: Boolean,
-    scala:           ScalaConfig,
-    inc:             IncConfig
-  )
-
   case class ScalaConfig(
     fatalWarnings: Boolean,
     isScala211:    Boolean,
@@ -24,9 +17,35 @@ object CompileScalaJava {
     optimize:      Boolean
   )
 
+  object ScalaConfig {
+
+    val default: ScalaConfig =
+      ScalaConfig(
+        fatalWarnings = true,
+        isScala211 = true,
+        logImplicits = true,
+        optimize = true
+      )
+
+    def ensure211x(c: ScalaConfig = default) =
+      c.copy(isScala211 = true)
+
+    def ensure210x(c: ScalaConfig = default) =
+      c.copy(isScala211 = false)
+
+  }
+
   case class IncConfig(
     onMacroDef: Boolean,
     nameHash:   Boolean
+  )
+
+  case class Config(
+    jvmVer:                        JvmVersion,
+    formatOnCompile:               Boolean,
+    scala:                         ScalaConfig,
+    inc:                           IncConfig,
+    compileOptionOverrideToSimple: Boolean     = false
   )
 
   object Config {
@@ -49,14 +68,18 @@ object CompileScalaJava {
           )
       )
 
-    val strict: Config =
-      default.copy(scala = default.scala.copy(fatalWarnings = true))
+    def ensureStrict(c: Config = default) =
+      c.copy(scala = c.scala.copy(fatalWarnings = true))
 
-    val spark: Config =
-      default.copy(jvmVer = JvmRuntime.Jvm7)
+    def ensureJvm7(c: Config = default) =
+      c.copy(jvmVer = JvmRuntime.Jvm7)
 
-    val plugin: Config =
-      default.copy(scala = default.scala.copy(isScala211 = false))
+    def overrideAllCompileOptionsToSimple(c: Config = default) =
+      c.copy(compileOptionOverrideToSimple = true)
+
+    val spark = ensureJvm7()
+
+    val plugin = default.copy(scala = ScalaConfig.ensure210x())
 
   }
 
@@ -106,84 +129,92 @@ object CompileScalaJava {
     val fmt =
       CodeFormat.settings(c.formatOnCompile)
 
-    val java =
-      Seq(javacOptions ++= javacSettings(c))
-
     val incCompile =
-      Seq(incOptions := incOptions.value
-        .withRecompileOnMacroDef(c.inc.onMacroDef)
-        .withNameHashing(c.inc.nameHash))
+      if (c.compileOptionOverrideToSimple)
+        Seq.empty[Def.Setting[_]]
 
-    val scala =
-      scalacSettings(c)
+      else
+        Seq(incOptions := incOptions.value
+          .withRecompileOnMacroDef(c.inc.onMacroDef)
+          .withNameHashing(c.inc.nameHash))
 
     // use all !
 
-    fmt ++ java ++ incCompile ++ scala
+    fmt ++ javacSettings(c) ++ incCompile ++ scalacSettings(c)
   }
 
   /**
    * Yield the correct -source and -target settings for the given JVM version.
    */
-  def javacSettings(c: Config = Config.default): Seq[String] =
-    Seq(
-      "-source", c.jvmVer.short,
-      "-target", c.jvmVer.short
-    )
+  def javacSettings(c: Config = Config.default): Seq[Def.Setting[_]] =
+    if (c.compileOptionOverrideToSimple)
+      Seq.empty[Def.Setting[_]]
+
+    else
+      Seq(
+        javacOptions ++= Seq(
+          "-source", c.jvmVer.short,
+          "-target", c.jvmVer.short
+        )
+      )
 
   /**
    * Yield the correct scalacOptions for the given JVM version, scala version,
    * and whether or not things like fatalWarnings and logging of implicit
    * conversions / classes are done during compilation.
    */
-  def scalacSettings(c: Config = Config.default): Seq[Def.Setting[_]] = {
+  def scalacSettings(c: Config = Config.default): Seq[Def.Setting[_]] =
+    if (c.compileOptionOverrideToSimple)
+      scalacOptions := Seq.empty[String]
 
-    val options =
-      Seq(
-        // warn for deprecations
-        "-deprecation",
-        // encode source as UTF-8
-        "-encoding", "utf8",
-        "-feature",
-        // Enable advanced Scala language stuff
-        "-language:postfixOps",
-        "-language:existentials",
-        "-language:higherKinds",
-        "-language:implicitConversions",
-        "-language:experimental.macros",
-        // Output bytecode specific to the given JVM version
-        s"-target:jvm-${c.jvmVer.short}",
-        // Warn on unchecked stuff
-        "-unchecked",
-        // Run the source code linter
-        "-Xlint",
-        // Enable future language extensions
-        "-Xfuture",
-        "-Yno-adapted-args",
-        // Emit warnings when dead code is detected
-        "-Ywarn-dead-code",
-        // Emit warnings when non-unit values are discarded
-        "-Ywarn-value-discard",
-        // Emit warnings when things tagged @inline cannot be inlined
-        "-Yinline-warnings"
-      )
+    else {
 
-    scalacOptions := options
-      // Emit a warning if the inferred type of something is `Any`
-      .addOption(c.scala.isScala211, "-Ywarn-infer-any")
-      // Output optimized bytecode (include all under -Yopt iff 2.11.x)
-      .addOption(c.scala.optimize && c.scala.isScala211, "-optimize", "-Yopt:_")
-      // Output optimized bytecode (iff using 2.10.x)
-      .addOption(c.scala.optimize && !c.scala.isScala211, "-optimize")
-      // turn all warnings into errors
-      .addOption(c.scala.fatalWarnings, "-Xfatal-warnings")
-      // during compilation, emit a logging message whenver an
-      // implicit conversion or class is used
-      .addOption(c.scala.logImplicits, "-Xlog-implicits")
-      // use an optimized bytecode generator
-      // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
-      .addOption(c.scala.isScala211, "-Ybackend:GenBCode")
-  }
+      val options =
+        Seq(
+          // warn for deprecations
+          "-deprecation",
+          // encode source as UTF-8
+          "-encoding", "utf8",
+          "-feature",
+          // Enable advanced Scala language stuff
+          "-language:postfixOps",
+          "-language:existentials",
+          "-language:higherKinds",
+          "-language:implicitConversions",
+          "-language:experimental.macros",
+          // Output bytecode specific to the given JVM version
+          s"-target:jvm-${c.jvmVer.short}",
+          // Warn on unchecked stuff
+          "-unchecked",
+          // Run the source code linter
+          "-Xlint",
+          // Enable future language extensions
+          "-Xfuture",
+          "-Yno-adapted-args",
+          // Emit warnings when dead code is detected
+          "-Ywarn-dead-code",
+          // Emit warnings when non-unit values are discarded
+          "-Ywarn-value-discard",
+          // Emit warnings when things tagged @inline cannot be inlined
+          "-Yinline-warnings"
+        )
+
+      scalacOptions := options
+        // Emit a warning if the inferred type of something is `Any`
+        .addOption(c.scala.isScala211, "-Ywarn-infer-any")
+        // Output optimized bytecode (include all under -Yopt iff 2.11.x)
+        .addOption(c.scala.optimize && c.scala.isScala211, "-optimize", "-Yopt:_")
+        // Output optimized bytecode (iff using 2.10.x)
+        .addOption(c.scala.optimize && !c.scala.isScala211, "-optimize")
+        // turn all warnings into errors
+        .addOption(c.scala.fatalWarnings, "-Xfatal-warnings")
+        // during compilation, emit a logging message whenver an
+        // implicit conversion or class is used
+        .addOption(c.scala.logImplicits, "-Xlog-implicits")
+        // use an optimized bytecode generator
+        // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
+        .addOption(c.scala.isScala211, "-Ybackend:GenBCode")
+    }
 
   /**
    * Used in `scalacSettings`.
