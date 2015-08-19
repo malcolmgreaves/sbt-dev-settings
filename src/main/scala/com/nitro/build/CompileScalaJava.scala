@@ -10,17 +10,23 @@ object CompileScalaJava {
 
   import JvmRuntime.{ JvmVersion, defaultJvmVersion }
 
-  sealed trait IncCompileV
-  case object NameHash extends IncCompileV
-  case object UseMacro extends IncCompileV
-
   case class Config(
     jvmVer:          JvmVersion,
-    fatalWarnings:   Boolean,
     formatOnCompile: Boolean,
-    isScala211:      Boolean,
-    logImplicits:    Boolean,
-    inc:             Option[IncCompileV]
+    scala:           ScalaConfig,
+    inc:             IncConfig
+  )
+
+  case class ScalaConfig(
+    fatalWarnings: Boolean,
+    isScala211:    Boolean,
+    logImplicits:  Boolean,
+    optimize:      Boolean
+  )
+
+  case class IncConfig(
+    onMacroDef: Boolean,
+    nameHash:   Boolean
   )
 
   object Config {
@@ -28,24 +34,29 @@ object CompileScalaJava {
     val default: Config =
       Config(
         jvmVer = defaultJvmVersion,
-        fatalWarnings = true,
         formatOnCompile = false,
-        isScala211 = true,
-        logImplicits = false,
-        inc = Some(NameHash)
+        scala =
+          ScalaConfig(
+            fatalWarnings = true,
+            logImplicits = false,
+            isScala211 = true,
+            optimize = true
+          ),
+        inc =
+          IncConfig(
+            onMacroDef = true,
+            nameHash = true
+          )
       )
 
     val strict: Config =
-      default.copy(fatalWarnings = true)
+      default.copy(scala = default.scala.copy(fatalWarnings = true))
 
     val spark: Config =
       default.copy(jvmVer = JvmRuntime.Jvm7)
 
-    val macroWork: Config =
-      default.copy(inc = Some(UseMacro))
-
     val plugin: Config =
-      default.copy(isScala211 = false)
+      default.copy(scala = default.scala.copy(isScala211 = false))
 
   }
 
@@ -80,7 +91,7 @@ object CompileScalaJava {
    */
   def librarySettings(c: Config = Config.default) =
     settings(c) ++ {
-      if (c.isScala211)
+      if (c.scala.isScala211)
         scala211 ++ crossCompile
       else
         scala210
@@ -99,22 +110,9 @@ object CompileScalaJava {
       Seq(javacOptions ++= javacSettings(c))
 
     val incCompile =
-      Seq(incOptions := {
-        c.inc match {
-          case Some(x) =>
-            x match {
-
-              case UseMacro =>
-                incOptions.value.withRecompileOnMacroDef(true)
-
-              case NameHash =>
-                incOptions.value.withNameHashing(true)
-            }
-
-          case None =>
-            incOptions.value
-        }
-      })
+      Seq(incOptions := incOptions.value
+        .withRecompileOnMacroDef(c.inc.onMacroDef)
+        .withNameHashing(c.inc.nameHash))
 
     val scala =
       scalacSettings(c)
@@ -153,8 +151,6 @@ object CompileScalaJava {
         "-language:higherKinds",
         "-language:implicitConversions",
         "-language:experimental.macros",
-        // Output optimized bytecode
-        "-optimize",
         // Output bytecode specific to the given JVM version
         s"-target:jvm-${c.jvmVer.short}",
         // Warn on unchecked stuff
@@ -171,20 +167,20 @@ object CompileScalaJava {
         // Emit warnings when non-unit values are discarded
         "-Ywarn-value-discard",
         // Emit warnings when things tagged @inline cannot be inlined
-        "-Yinline-warnings",
-        // Enable all advanced code optimizations
-        "-Yopt:_"
+        "-Yinline-warnings"
       )
 
     scalacOptions := options
+      // Output optimized bytecode
+      .addOption(c.scala.optimize, "-optimize", "-Yopt:_")
       // turn all warnings into errors
-      .addOption(c.fatalWarnings, "-Xfatal-warnings")
+      .addOption(c.scala.fatalWarnings, "-Xfatal-warnings")
       // during compilation, emit a logging message whenver an
       // implicit conversion or class is used
-      .addOption(c.logImplicits, "-Xlog-implicits")
+      .addOption(c.scala.logImplicits, "-Xlog-implicits")
       // use an optimized bytecode generator
       // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
-      .addOption(c.isScala211, "-Ybackend:GenBCode")
+      .addOption(c.scala.isScala211, "-Ybackend:GenBCode")
   }
 
   /**
@@ -192,9 +188,9 @@ object CompileScalaJava {
    * Makes it easy, syntactically, to conditionally add settings.
    */
   private[this] implicit class AddOption(s: Seq[String]) {
-    def addOption(doAdd: Boolean, option: String): Seq[String] =
+    def addOption(doAdd: Boolean, options: String*): Seq[String] =
       if (doAdd)
-        s :+ option
+        s ++ options
       else
         s
   }
