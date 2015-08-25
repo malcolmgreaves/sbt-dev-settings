@@ -1,8 +1,8 @@
-# sbt-nitro-dev-settings #
+# sbt--dev-settings #
 
 ### What is this?
 
-**sbt-nitro-dev-settings** is a plugin that lets us standardize build settings (code formatting rules, compilation, runtime, publishing, ) across many Scala repos.
+**sbt-dev-settings** is a plugin that lets us standardize build settings (code formatting rules, compilation, runtime, publishing, ) across many Scala repos.
 
 ### Why use this? 
  
@@ -22,7 +22,7 @@ TODO
 
 Add the following to your `project/plugins.sbt` file:
 
-    addSbtPlugin("com.gonitro.platform" % "sbt-dev-settings" % "X.Y.Z")
+    addSbtPlugin("com.gonitro" % "sbt-dev-settings" % "X.Y.Z")
 
 ## Usage
 
