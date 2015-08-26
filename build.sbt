@@ -20,7 +20,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.4")
 
 // scalariform format settings
-import scalariform.formatter.preferences._
+/*import scalariform.formatter.preferences._
 
 defaultScalariformSettings
 
@@ -41,7 +41,7 @@ ScalariformKeys.preferences := ScalariformKeys.preferences.value
       .setPreference(SpaceBeforeColon, false)
       .setPreference(SpaceInsideBrackets, false)
       .setPreference(SpacesWithinPatternBinders, true)
-
+*/
 // publish settings
 
 publishMavenStyle := true
