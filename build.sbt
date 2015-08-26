@@ -19,6 +19,29 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.4")
 
+// scalariform format settings
+import scalariform.formatter.preferences._
+
+defaultScalariformSettings
+
+ScalariformKeys.preferences := ScalariformKeys.preferences.value
+      .setPreference(AlignParameters, true)
+      .setPreference(AlignSingleLineCaseStatements, true)
+      .setPreference(CompactControlReadability, false)
+      .setPreference(CompactStringConcatenation, true)
+      .setPreference(DoubleIndentClassDeclaration, true)
+      .setPreference(FormatXml, true)
+      .setPreference(IndentLocalDefs, true)
+      .setPreference(IndentPackageBlocks, true)
+      .setPreference(IndentSpaces, 2)
+      .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
+      .setPreference(PreserveDanglingCloseParenthesis, true)
+      .setPreference(PreserveSpaceBeforeArguments, false)
+      .setPreference(RewriteArrowSymbols, false)
+      .setPreference(SpaceBeforeColon, false)
+      .setPreference(SpaceInsideBrackets, false)
+      .setPreference(SpacesWithinPatternBinders, true)
+
 // publish settings
 
 publishMavenStyle := true
