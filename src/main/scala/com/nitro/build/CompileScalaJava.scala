@@ -106,7 +106,7 @@ object CompileScalaJava {
    * Settings for doing plugin development (scala 2.10 with base settings).
    */
   def pluginSettings(c: Config = Config.plugin) =
-    settings(c) ++ scala210
+    settings(c) ++ scala210 ++ Seq(sbtPlugin := true)
 
   /**
    * Settings for doing library or application development
