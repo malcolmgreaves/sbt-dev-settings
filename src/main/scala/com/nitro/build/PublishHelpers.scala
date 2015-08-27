@@ -11,14 +11,14 @@ object PublishHelpers {
 
   type Url = String
 
-  case class Version(major: Short, minor: Short, patch: Short, isSnapshot: Boolean) {
+  case class SemanticVersion(major: Short, minor: Short, patch: Short, isSnapshot: Boolean) {
     override def toString =
       s"""$major.$minor.$patch${if(isSnapshot) "-SNAPSHOT" else ""}"""
   }
 
-  object Version {
+  object SemanticVersion {
     
-    def parse(ver: String): Option[Version] =
+    def parse(ver: String): Option[SemanticVersion] =
       Try {
         val bits = ver.split("\\.")
         val (major, minor, patchSnap) = (bits(0), bits(1), bits(2))
@@ -26,7 +26,7 @@ object PublishHelpers {
           val sbits = patchSnap.split("-")
           (sbits(0), sbits.size == 2)
         }
-        Version(
+        SemanticVersion(
           major = major.toShort,
           minor = minor.toShort,
           patch = patch.toShort,
@@ -83,7 +83,7 @@ object PublishHelpers {
    */
   case class ArtifactInfo(
     location:  Url,
-    ver: Version
+    ver: SemanticVersion
   )
 
   object ArtifactInfo {
@@ -91,7 +91,7 @@ object PublishHelpers {
     /**
      * An Artifact instance that is useful for pushing releases to Sonatype.
      */
-    def sonatype(v: Version) =
+    def sonatype(v: SemanticVersion) =
       ArtifactInfo(
         location = "https://oss.sonatype.org/",
         ver = v
