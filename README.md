@@ -1,6 +1,9 @@
 # sbt--dev-settings #
 [![Build Status](https://travis-ci.org/malcolmgreaves/sbt-dev-settings.svg?branch=master)](https://travis-ci.org/malcolmgreaves/sbt-dev-settings)
 
+##### ALPHA WARNING
+This work is ongoing. This codebase is continually evolving; APIs break constantly. It should not be relied upon (yet!).
+
 ### What is this?
 
 **sbt-dev-settings** is a plugin that lets us standardize build settings (code formatting rules, compilation, runtime, publishing, ) across many Scala repos.
