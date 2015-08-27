@@ -1,5 +1,7 @@
 package com.nitro.build
 
+import scala.util.Try
+
 /**
  * Data structures for publish settings. Encapsulates information about
  * the developers, the hosted repository, the artifact publish location,
@@ -12,6 +14,26 @@ object PublishHelpers {
   case class Version(major: Short, minor: Short, patch: Short, isSnapshot: Boolean) {
     override def toString =
       s"""$major.$minor.$patch${if(isSnapshot) "-SNAPSHOT" else ""}"""
+  }
+
+  object Version {
+    
+    def parse(ver: String): Option[Version] =
+      Try {
+        val bits = ver.split("\\.")
+        val (major, minor, patchSnap) = (bits(0), bits(1), bits(2))
+        val (patch, isSnapshot) = {
+          val sbits = patchSnap.split("-")
+          (sbits(0), sbits.size == 2)
+        }
+        Version(
+          major = major.toShort,
+          minor = minor.toShort,
+          patch = patch.toShort,
+          isSnapshot = isSnapshot
+        )
+      }
+      .toOption
   }
 
   /**
