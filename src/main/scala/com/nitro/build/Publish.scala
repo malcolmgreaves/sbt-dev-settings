@@ -24,7 +24,7 @@ object Publish {
   ) =
     Seq(
       publishMavenStyle := true,
-      isSnapshot := !art.isRelease,
+      isSnapshot := art.ver.isSnapshot,
       publishArtifact in Test := false,
       publishTo := {
         if (isSnapshot.value)

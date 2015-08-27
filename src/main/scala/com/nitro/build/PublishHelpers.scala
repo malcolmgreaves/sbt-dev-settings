@@ -1,11 +1,18 @@
 package com.nitro.build
 
 /**
- * Data structures for publish settings.
+ * Data structures for publish settings. Encapsulates information about
+ * the developers, the hosted repository, the artifact publish location,
+ * the project version, and the project's license.
  */
 object PublishHelpers {
 
   type Url = String
+
+  case class Version(major: Short, minor: Short, patch: Short, isSnapshot: Boolean) {
+    override def toString =
+      s"""$major.$minor.$patch${if(isSnapshot) "-SNAPSHOT" else ""}"""
+  }
 
   /**
    * Represents a developer by their user ID and real name
@@ -35,6 +42,17 @@ object PublishHelpers {
         group = group,
         sourceControl = "github.com"
       )
+
+    /**
+     * Creates a Repository instance with `sourceControl` populated with Bitbucket.
+     */
+    def bitbucket(name: String, group: String): Repository =
+      Repository(
+        name = name,
+        group = group,
+        sourceControl = "bitbucket.org"
+      )
+
   }
 
   /**
@@ -43,7 +61,7 @@ object PublishHelpers {
    */
   case class ArtifactInfo(
     location:  Url,
-    isRelease: Boolean
+    ver: Version
   )
 
   object ArtifactInfo {
@@ -51,15 +69,15 @@ object PublishHelpers {
     /**
      * An Artifact instance that is useful for pushing releases to Sonatype.
      */
-    val sonatype =
+    def sonatype(v: Version) =
       ArtifactInfo(
         location = "https://oss.sonatype.org/",
-        isRelease = true
+        ver = v
       )
   }
 
   /**
-   * Contains licensing information for the published code.
+   * Contains licensing information for the code.
    */
   case class License(name: String, location: Url, distribution: String)
 
@@ -119,9 +137,9 @@ object PublishHelpers {
      * A License instance that permits absolutely no sharing. All rights are
      * reserved by the Copyright holder.
      */
-    val noLicense =
+    def noLicense(owner: String) =
       License(
-        name = "No License. All Copyrights Reserved",
+        name = s"No License. All Copyrights Reserved by $owner",
         location = "http://choosealicense.com/licenses/no-license/",
         distribution = "repo"
       )
