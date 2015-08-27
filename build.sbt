@@ -1,4 +1,4 @@
-organization := "com.gonitro.platform"
+organization := "com.gonitro"
 
 name := "sbt-dev-settings"
 
