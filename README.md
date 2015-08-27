@@ -1,4 +1,5 @@
 # sbt--dev-settings #
+[![Build Status](https://travis-ci.org/malcolmgreaves/sbt-dev-settings.svg?branch=master)](https://travis-ci.org/malcolmgreaves/sbt-dev-settings)
 
 ### What is this?
 
