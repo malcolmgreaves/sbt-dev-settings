@@ -1,7 +1,7 @@
 package com.nitro.build
 
 import sbt.Keys._
-import sbt.{ Def, Setting }
+import sbt.{SettingKey, Def, Setting}
 
 /**
  * Compilation settings for Scala and Java.
@@ -12,26 +12,22 @@ object CompileScalaJava {
 
   case class ScalaConfig(
     fatalWarnings: Boolean,
-    isScala211:    Boolean,
     logImplicits:  Boolean,
-    optimize:      Boolean
+    optimize:      Boolean,
+    crossCompile:  Seq[String]
   )
 
   object ScalaConfig {
 
+    val cross = Seq("2.10.5", "2.11.7")
+
     val default: ScalaConfig =
       ScalaConfig(
         fatalWarnings = true,
-        isScala211 = true,
-        logImplicits = true,
-        optimize = true
+        logImplicits = false,
+        optimize = true,
+        crossCompile = cross
       )
-
-    def ensure211x(c: ScalaConfig = default) =
-      c.copy(isScala211 = true)
-
-    def ensure210x(c: ScalaConfig = default) =
-      c.copy(isScala211 = false)
 
   }
 
@@ -40,11 +36,20 @@ object CompileScalaJava {
     nameHash:   Boolean
   )
 
+  object IncConfig {
+
+    val default: IncConfig =
+      IncConfig(
+        onMacroDef = true,
+        nameHash = true
+      )
+  }
+
   case class Config(
     jvmVer:                        JvmVersion,
     formatOnCompile:               Boolean,
     scala:                         ScalaConfig,
-    inc:                           IncConfig,
+    inc:                           Option[IncConfig],
     compileOptionOverrideToSimple: Boolean     = false
   )
 
@@ -54,18 +59,8 @@ object CompileScalaJava {
       Config(
         jvmVer = defaultJvmVersion,
         formatOnCompile = false,
-        scala =
-          ScalaConfig(
-            fatalWarnings = true,
-            logImplicits = false,
-            isScala211 = true,
-            optimize = true
-          ),
-        inc =
-          IncConfig(
-            onMacroDef = true,
-            nameHash = true
-          )
+        scala = ScalaConfig.default,
+        inc = Some(IncConfig.default)
       )
 
     def ensureStrict(c: Config = default) =
@@ -77,48 +72,44 @@ object CompileScalaJava {
     def overrideAllCompileOptionsToSimple(c: Config = default) =
       c.copy(compileOptionOverrideToSimple = true)
 
-    val spark = ensureJvm7()
+    val spark = ensureJvm7(default)
 
-    val plugin = default.copy(scala = ScalaConfig.ensure210x())
+    val plugin =
+      default.copy(scala =
+        default.scala.copy(crossCompile =
+          Seq.empty[String]
+        )
+      )
 
   }
 
-  private[this] val ver210 = "2.10.5"
-
-  private[this] val ver211 = "2.11.7"
-
   /**
-   * Scala version: 2.10.5
+   * [mutation!] Sets scalaVersion to 2.10.5
+   * Ignores any crossCompile settings in the input Config, c.
    */
-  lazy val scala210 = Seq(scalaVersion := ver210)
+  def pluginSettings(c: Config = Config.plugin) = {
+    scalaVersion := "2.10.5"
+    val updatedC = c.copy(scala =
+      c.scala.copy(crossCompile = Seq.empty[String])
+    )
+    settings(updatedC) ++ Seq(sbtPlugin := true)
+  }
 
-  /**
-   * Scala version: 2.11.7
-   */
-  lazy val scala211 = Seq(scalaVersion := ver211)
-
-  /**
-   * Scala cross compilation settings: 2.11.7 and 2.10.5
-   */
-  lazy val crossCompile = Seq(crossScalaVersions := Seq(ver210, ver211))
-
-  /**
-   * Settings for doing plugin development (scala 2.10 with base settings).
-   */
-  def pluginSettings(c: Config = Config.plugin) =
-    settings(c) ++ scala210 ++ Seq(sbtPlugin := true)
 
   /**
    * Settings for doing library or application development
    * (scala 2.11 with base settings and cross-compilation to 2.10).
+   *
+   * Note. Unlike plugin(), this does not mutate scalaVersion. It does
+   * make sure that c.scala.crossCompile == (2.10.5, 2.11.7)
    */
-  def librarySettings(c: Config = Config.default) =
-    settings(c) ++ {
-      if (c.scala.isScala211)
-        scala211 ++ crossCompile
-      else
-        scala210
-    }
+  def librarySettings(c: Config = Config.default) = {
+    val updatedC = c.copy(scala =
+      c.scala.copy(crossCompile = ScalaConfig.cross)
+    )
+    settings(updatedC) ++ Seq(crossScalaVersions := c.scala.crossCompile)
+  }
+
 
   /**
    * Obtain settings for scalac and javac.
@@ -130,13 +121,13 @@ object CompileScalaJava {
       CodeFormat.settings(c.formatOnCompile)
 
     val incCompile =
-      if (c.compileOptionOverrideToSimple)
+      if (c.compileOptionOverrideToSimple || c.inc.isEmpty)
         Seq.empty[Def.Setting[_]]
 
       else
         Seq(incOptions := incOptions.value
-          .withRecompileOnMacroDef(c.inc.onMacroDef)
-          .withNameHashing(c.inc.nameHash))
+          .withRecompileOnMacroDef(c.inc.get.onMacroDef)
+          .withNameHashing(c.inc.get.nameHash))
 
     // use all !
 
@@ -201,11 +192,11 @@ object CompileScalaJava {
 
       scalacOptions := options
         // Emit a warning if the inferred type of something is `Any`
-        .addOption(c.scala.isScala211, "-Ywarn-infer-any")
+        .addOption(isScala211(scalaVersion.value), "-Ywarn-infer-any")
         // Output optimized bytecode (include all under -Yopt iff 2.11.x)
-        .addOption(c.scala.optimize && c.scala.isScala211, "-optimize", "-Yopt:_")
+        .addOption(c.scala.optimize && isScala211(scalaVersion.value), "-optimize", "-Yopt:_")
         // Output optimized bytecode (iff using 2.10.x)
-        .addOption(c.scala.optimize && !c.scala.isScala211, "-optimize")
+        .addOption(c.scala.optimize && !isScala211(scalaVersion.value), "-optimize")
         // turn all warnings into errors
         .addOption(c.scala.fatalWarnings, "-Xfatal-warnings")
         // during compilation, emit a logging message whenver an
@@ -213,8 +204,11 @@ object CompileScalaJava {
         .addOption(c.scala.logImplicits, "-Xlog-implicits")
         // use an optimized bytecode generator
         // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
-        .addOption(c.scala.isScala211, "-Ybackend:GenBCode")
+        .addOption(isScala211(scalaVersion.value), "-Ybackend:GenBCode")
     }
+
+  private[this] def isScala211(v:String):Boolean =
+    v.startsWith("2.11.")
 
   /**
    * Used in `scalacSettings`.
