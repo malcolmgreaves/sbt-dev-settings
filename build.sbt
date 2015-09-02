@@ -2,7 +2,7 @@ organization := "com.gonitro"
 
 name := "sbt-dev-settings"
 
-version := "0.0.5-SNAPSHOT"
+version := "0.1.0"
 
 sbtPlugin := true
 
@@ -83,6 +83,7 @@ pomExtra := (
     <developer>
       <id>gregsilin</id>
       <name>Greg Silin</name>
+      <email>gregsilin@gmail.com</email>
       <url>https://github.com/gregsilin</url>
     </developer>
   </developers>
