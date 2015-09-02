@@ -37,14 +37,6 @@ object PublishHelpers {
   }
 
   /**
-   * Represents a developer by their user ID and real name
-   * (nickname or anonymous handle is ok too).
-   *
-   * For example, if the repository is on Github, then `id` is the username.
-   */
-  case class Dev(id: String, name: String)
-
-  /**
    * Contains the name and group for a git repoistory.
    */
   case class Repository(

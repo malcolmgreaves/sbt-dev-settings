@@ -18,7 +18,7 @@ object Publish {
    */
   def settings(
     repo:       Repository,
-    developers: Seq[Dev],
+    developers: Seq[Developer],
     art:        ArtifactInfo,
     lic:        License
   ) =
@@ -34,20 +34,20 @@ object Publish {
       },
       pomIncludeRepository := { _ => false },
       pomExtra := {
-        <url>https://${ repo.sourceControl }/${ repo.group }/${ repo.name }</url>
+        <url>https://{ repo.sourceControl }/{ repo.group }/{ repo.name }</url>
         <licenses>
           <license>
-            <name>${ lic.name }</name>
-            <url>${ lic.location }</url>
-            <distribution>${ lic.distribution }</distribution>
+            <name>{ lic.name }</name>
+            <url>{ lic.location }</url>
+            <distribution>{ lic.distribution }</distribution>
           </license>
         </licenses>
         <scm>
-          <url>git@${ repo.sourceControl }:${ repo.group }/${ repo.name }.git</url>
-          <connection>scm:git@${ repo.sourceControl }:${ repo.group }/${ repo.name }.git</connection>
+          <url>git@{ repo.sourceControl }:{ repo.group }/{ repo.name }.git</url>
+          <connection>scm:git@{ repo.sourceControl }:{ repo.group }/{ repo.name }.git</connection>
         </scm>
         <developers>
-          ${ developers.map(developerXml(repo)) }
+          { developers.map(developerXml(repo)) }
         </developers>
       }
     )
@@ -55,11 +55,11 @@ object Publish {
   /**
    * Create the XML for properly attributing a developer.
    */
-  def developerXml(repo: Repository)(dev: Dev) =
+  def developerXml(repo: Repository)(dev: Developer) =
     <developer>
-      <id>${ dev.id }</id>
-      <name>${ dev.name }</name>
-      <url>https://${ repo.sourceControl }/${ dev.id }</url>
+      <id>{ dev.id }</id>
+      <name>{ dev.name }</name>
+      <url>https://{ repo.sourceControl }/{ dev.id }</url>
     </developer>
 
 }
