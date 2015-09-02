@@ -77,6 +77,7 @@ pomExtra := (
     <developer>
       <id>malcolmgreaves</id>
       <name>Malcolm Greaves</name>
+      <email>greaves.malcolm@gmail.com</email>
       <url>https://github.com/malcolmgreaves</url>
     </developer>
     <developer>
