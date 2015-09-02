@@ -59,7 +59,8 @@ object Publish {
     <developer>
       <id>{ dev.id }</id>
       <name>{ dev.name }</name>
-      <url>https://{ repo.sourceControl }/{ dev.id }</url>
+      <email>{ dev.email }</email>
+      <url>{ dev.url.toString }</url>
     </developer>
 
 }
