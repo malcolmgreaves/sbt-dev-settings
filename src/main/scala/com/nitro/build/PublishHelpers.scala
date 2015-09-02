@@ -82,7 +82,8 @@ object PublishHelpers {
    * or not to publish as a release (otherwise it's a snapshot).
    */
   case class ArtifactInfo(
-    location:  Url,
+    snapshot:  Url,
+    release: Url,
     ver: SemanticVersion
   )
 
@@ -93,7 +94,8 @@ object PublishHelpers {
      */
     def sonatype(v: SemanticVersion) =
       ArtifactInfo(
-        location = "https://oss.sonatype.org/",
+        snapshot = "https://oss.sonatype.org/content/repositories/snapshots",
+        release= "https://oss.sonatype.org/service/local/staging/deploy/maven2",
         ver = v
       )
   }

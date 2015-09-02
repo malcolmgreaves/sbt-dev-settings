@@ -28,9 +28,9 @@ object Publish {
       publishArtifact in Test := false,
       publishTo := {
         if (isSnapshot.value)
-          Some("snapshots" at s"${art.location}content/repositories/snapshots")
+          Some("snapshots" at art.snapshot)
         else
-          Some("releases" at s"${art.location}content/repositories/releases")
+          Some("releases" at art.release)
       },
       pomIncludeRepository := { _ => false },
       pomExtra := {

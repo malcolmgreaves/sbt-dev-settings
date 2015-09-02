@@ -2,7 +2,7 @@ organization := "com.gonitro"
 
 name := "sbt-dev-settings"
 
-version := "0.0.2-SNAPSHOT"
+version := "0.0.3-SNAPSHOT"
 
 sbtPlugin := true
 
@@ -51,7 +51,7 @@ publishTo := {
     if (isSnapshot.value)
         Some("snapshots" at nexus + "content/repositories/snapshots")
     else
-        Some("releases" at nexus + "content/repositories/releases")//"service/local/staging/deploy/maven2")
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
 publishMavenStyle := true
