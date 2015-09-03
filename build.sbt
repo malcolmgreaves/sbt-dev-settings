@@ -2,7 +2,7 @@ organization := "com.gonitro"
 
 name := "sbt-dev-settings"
 
-version := "0.2.0"
+version := "0.2.1"
 
 sbtPlugin := true
 

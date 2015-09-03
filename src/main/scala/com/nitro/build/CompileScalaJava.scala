@@ -60,7 +60,7 @@ object CompileScalaJava {
         jvmVer = defaultJvmVersion,
         formatOnCompile = false,
         scala = ScalaConfig.default,
-        inc = Some(IncConfig.default)
+        inc = None
       )
 
     def ensureStrict(c: Config = default) =
