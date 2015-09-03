@@ -99,23 +99,35 @@ Add the following to your `project/plugins.sbt` file:
 
 Where `X.Y.Z` is the most recent one from [sonatype](https://oss.sonatype.org/content/repositories/releases/com/gonitro/sbt-dev-settings_2.10_0.13/).
 
-### Build Settings
+### Deeper Dive: Build Settings
 
-#### [Compile](??? todo ???)
+#### [Compile](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CompileScalaJava.scala)
 
 Scala version & compiler settings
 
-#### [Docker](??? todo ???)
+#### [Docker](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Docker.scala)
 
 Docker publishing settings.
 
-#### [sbt-git](???)
+#### [sbt-git](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/SbtGit.scala)
 
 sbt-git versioning settings.
 
-#### [Publish](??? todo ???)
+#### [Publish](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Publish.scala)
 
-Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage.
+Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers(https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/PublishHelpers.scala).
+
+#### [Runtime](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/JvmRuntime.scala)
+
+Settings for the Java runtime. Includes Java version 6, 7, and 8.
+
+#### [Format)(https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CodeFormat.scala)
+
+Code formatting settings using scalarifom.
+
+#### [Dependencies](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Dependencies.scala)
+
+Common dependencies for fundamental things, e.g. logging and testing.
 
 ## How Do I Contribute?
 
