@@ -1,26 +1,31 @@
 # sbt-dev-settings #
 [![Build Status](https://travis-ci.org/malcolmgreaves/sbt-dev-settings.svg?branch=master)](https://travis-ci.org/malcolmgreaves/sbt-dev-settings) [![Codacy Badge](https://api.codacy.com/project/badge/54e884abc2f641b6bac0e22029c3366e)](https://www.codacy.com/app/greavesmalcolm/sbt-dev-settings)
 
-##### ALPHA WARNING
-This work is ongoing. This codebase is continually evolving; APIs break constantly. It should not be relied upon (yet!).
-
 ### What is this?
 
-**sbt-dev-settings** is a plugin that lets us standardize build settings (code formatting rules, compilation, runtime, publishing, ) across many Scala repos.
+**sbt-dev-settings** is a plugin that lets you standardize build settings across many Scala projects. 
 
 ### Why use this? 
  
-You don't have to copy-paste settings and worry about making sure about keeping our build configurations in sync across all libraries.  Things like publishing & dockerizing are managed for you!
+By depending on this plugin, you have access to a standard set of methods that declaritively modify sbt `SettingsKey` instances. You don't have to copy-paste settings and worry about making sure about keeping our build configurations in sync across all libraries. Highlights of this plugin include standardization for:
+
+* `scalarifomSettings`: Code formatting rules through Scalarifom 
+* `scalacOptions` and `javacOptions`: Bringing-in lots of useful compilier options
+* `javaOptions`: Configuring the Java runtime, bringing optimal options on a per-JVM version basis
+* `publishTo`: Tired of messing up your POM and getting rejected from Sonatype? `com.nitro.build.Publish.settings` makes publish configurations a whole lot simpler!
+* And more for docker, sbt-git, and common logging and testing dependencies!
 
 ### Do I have to learn new SBT commands?
 
-No!
+No! (yay!)
 
-You can continue using `compile`, `test`, `publishLocal` in sbt just as you used to.
+This plugin only configures common sbt `SettkingsKey` values. So you can continue using `compile`, `test`, `publish` in sbt just as you used to.
 
-### So how do I use this?
+### Example: So how do I use this?
 
-TODO
+Here's an example for configuring a `build.sbt` file:
+
+    TODO !
 
 ## Installation
 
@@ -28,41 +33,7 @@ Add the following to your `project/plugins.sbt` file:
 
     addSbtPlugin("com.gonitro" % "sbt-dev-settings" % "X.Y.Z")
 
-## Usage
-
-### Common configurations
-
-#### Build & publishing configuration
-
-##### Library
-
-TODO
-
-##### Docker Container
-
-TODO
-
-##### SBT Plugin
-
-TODO
-
-### What you still have to provide
-
-+ GroupId
-
-    organization := "my-org"
-
-+ Project name
-
-    name := "my-project"
-
-+ Version
-
-    version := "0.0.1"
-
-+ Your own dependencies
-
-    libraryDependencies ++= Seq( ... )
+Where `X.Y.Z` is the most recent one from [sonatype](https://oss.sonatype.org/content/repositories/releases/com/gonitro/sbt-dev-settings_2.10_0.13/).
 
 ### Build Settings
 
