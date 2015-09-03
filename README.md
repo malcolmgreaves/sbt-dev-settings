@@ -21,7 +21,9 @@ No! (yay!)
 
 This plugin only configures common sbt `SettkingsKey` values. So you can continue using `compile`, `test`, `publish` in sbt just as you used to.
 
-### Example: So how do I use this?
+### Examples
+
+#### So how do I use this?
 
 Here's an example for configuring a `build.sbt` file:
 
@@ -39,9 +41,10 @@ Here's an example for configuring a `build.sbt` file:
     
     // // GAV coordinates // //
     
+    lazy val pName = "YOUR_PROJECT_NAME"
     lazy val semver = SemanticVersion(MAJOR, MINOR, PATCH, isSnapshot = {true, false})
     organization := "YOUR_GROUP_ID"
-    name := "YOUR_PROJECT_NAME"
+    name := pName
     version := semver.toString
     
     // // scala & java settings // //
@@ -70,7 +73,7 @@ Here's an example for configuring a `build.sbt` file:
     Publish.settings(
       repo = Repository(
        group         = "YOUR_REPO_GROUP_NAME", 
-       name          = name.toString,
+       name          = pName,
        sourceControl = "URL_TO_HOSTED"
       ), 
       // if using Github, consider the simplier method: Repository.github(group,name)
@@ -89,7 +92,7 @@ Here's an example for configuring a `build.sbt` file:
        License.apache20
     )
 
-## Installation
+### Installation
 
 Add the following to your `project/plugins.sbt` file:
 
