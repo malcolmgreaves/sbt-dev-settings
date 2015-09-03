@@ -1,4 +1,4 @@
-# sbt--dev-settings #
+# sbt-dev-settings #
 [![Build Status](https://travis-ci.org/malcolmgreaves/sbt-dev-settings.svg?branch=master)](https://travis-ci.org/malcolmgreaves/sbt-dev-settings) [![Codacy Badge](https://api.codacy.com/project/badge/54e884abc2f641b6bac0e22029c3366e)](https://www.codacy.com/app/greavesmalcolm/sbt-dev-settings)
 
 ##### ALPHA WARNING
