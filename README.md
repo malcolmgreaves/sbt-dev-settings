@@ -15,7 +15,7 @@ By depending on this plugin, you have access to a standard set of methods that d
 * `publishTo`: Tired of messing up your POM and getting rejected from Sonatype? `com.nitro.build.Publish.settings` makes publish configurations a whole lot simpler!
 * And more for docker, sbt-git, and common logging and testing dependencies!
 
-### Do I have to learn new SBT commands?
+### Do I have to learn new sbt commands?
 
 No! (yay!)
 
@@ -25,7 +25,69 @@ This plugin only configures common sbt `SettkingsKey` values. So you can continu
 
 Here's an example for configuring a `build.sbt` file:
 
-    TODO !
+    // inclues sbt-dev-settings plugin objects and types
+    // * Publish, PublishHelpers
+    // * CompileScalaJava
+    // * JvmRuntime
+    import com.nitro.build._        
+    // Pulls in helper types for publishing internally. This includes
+    // * SemanticVersion
+    // * Repository
+    // * ArtifactInfo
+    // * License
+    import PublishHelpers._   
+    
+    // // GAV coordinates // //
+    
+    lazy val pName  = "YOUR_PROJECT_NAME"
+    lazy val semver = SemanticVersion(MAJOR, MINOR, PATCH, isSnapshot = {true, false})
+    
+    organization := "YOUR_GROUP_ID"
+    name := pName
+    version := semver.toString
+    
+    // // scala & java settings // //
+    
+    // There's a lot of room to configure scala, java compilation options.
+    // Including incremental compilation options for scala. See `CompileScalaJava.scala`
+    // for details.
+    // This default configuration does not change incremental compilation options,
+    // uses Java 8, has fatal warnings, emits optimized bytecode for Scala, and
+    // enables many language features (e.g. macros, higher kinded types, implicits, etc.).
+    val devConfig = Config.default
+    
+    // Use `devConfig` to set the scalacOptions, javacOptions, and incOptions settings.
+    scalaVersion := "2.11.7"
+    CompileScalaJava.librarySettings(devConfig)
+    // If doing plugin development, use `CompileScalaJava.pluginSettings`
+    
+    // Set the Java runtime options from the same config.
+    javaOptions := JvmRuntime.settings(devConfig.jvmVer)
+    
+    // // Publish Settings // //
+    
+    // set publishTo with XML generated from this method
+    Publish.settings(
+      repo = Repository(
+       group         = "YOUR_REPO_GROUP_NAME", 
+       name          = "YOUR_PROJECT_NAME", // should probably be pName !
+       sourceControl = "URL_TO_HOSTED"
+      ),
+      // if using Github, consider the simplier method: Repository.github(group,name)
+      developers =
+        Seq(
+          Developer(
+           id    = "YOUR_USER_ID",
+           name  = "YOUR_NAME",
+           email = "YOUR_EMAIL_ADDRESS",
+           url   = "URL_TO_YOU"
+          )
+        ),
+      art = // Where you'll be publishing your repo. E.g. sonatype
+       ArtifactInfo.sonatype(semver),
+      lic = // The license for your code. E.g. Apache 2.0
+       License.apache20
+    )
 
 ## Installation
 
