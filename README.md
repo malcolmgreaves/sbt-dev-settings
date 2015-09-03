@@ -59,7 +59,9 @@ Here's an example for configuring a `build.sbt` file:
     // Use `devConfig` to set the scalacOptions, javacOptions, and incOptions settings.
     scalaVersion := "2.11.7"
     CompileScalaJava.librarySettings(devConfig)
-    // If doing plugin development, use `CompileScalaJava.pluginSettings`
+    // `librarySettings` sets up cross compilation for 2.11.7 and 2.10.5.
+    // If doing plugin development, use `CompileScalaJava.pluginSettings`,
+    // which ensures that we're using only 2.10 and not cross compiling.
     
     // Set the Java runtime options from the same config.
     javaOptions := JvmRuntime.settings(devConfig.jvmVer)
@@ -72,7 +74,7 @@ Here's an example for configuring a `build.sbt` file:
        group         = "YOUR_REPO_GROUP_NAME", 
        name          = "YOUR_PROJECT_NAME", // should probably be pName !
        sourceControl = "URL_TO_HOSTED"
-      ),
+      ), 
       // if using Github, consider the simplier method: Repository.github(group,name)
       developers =
         Seq(
