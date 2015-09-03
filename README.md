@@ -39,11 +39,9 @@ Here's an example for configuring a `build.sbt` file:
     
     // // GAV coordinates // //
     
-    lazy val pName  = "YOUR_PROJECT_NAME"
     lazy val semver = SemanticVersion(MAJOR, MINOR, PATCH, isSnapshot = {true, false})
-    
     organization := "YOUR_GROUP_ID"
-    name := pName
+    name := "YOUR_PROJECT_NAME"
     version := semver.toString
     
     // // scala & java settings // //
@@ -72,7 +70,7 @@ Here's an example for configuring a `build.sbt` file:
     Publish.settings(
       repo = Repository(
        group         = "YOUR_REPO_GROUP_NAME", 
-       name          = "YOUR_PROJECT_NAME", // should probably be pName !
+       name          = name.toString,
        sourceControl = "URL_TO_HOSTED"
       ), 
       // if using Github, consider the simplier method: Repository.github(group,name)
