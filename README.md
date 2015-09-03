@@ -115,13 +115,13 @@ sbt-git versioning settings.
 
 #### [Publish](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Publish.scala)
 
-Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers(https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/PublishHelpers.scala).
+Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/PublishHelpers.scala).
 
 #### [Runtime](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/JvmRuntime.scala)
 
 Settings for the Java runtime. Includes Java version 6, 7, and 8.
 
-#### [Format)(https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CodeFormat.scala)
+#### [Format](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CodeFormat.scala)
 
 Code formatting settings using scalarifom.
 
@@ -131,7 +131,7 @@ Common dependencies for fundamental things, e.g. logging and testing.
 
 ## How Do I Contribute?
 
-We welcome all pull requests!
+We welcome all pull requests! We <3 this software; we want it to be used and be useful. Please submit a PR for any changes to kick-off a code review to reach consensus.
 
 ### License
 
