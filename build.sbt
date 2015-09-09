@@ -6,7 +6,7 @@ version := "0.2.1"
 
 sbtPlugin := true
 
-description := "sbt plugin for standardizing compilation, packaing, formatting, and publishing configurations"
+description := "sbt plugin for standardizing compilation, packaging, formatting, and publishing configurations"
 
 // sbt plugins must be at Scala 2.10.x
 scalaVersion := "2.10.5"
