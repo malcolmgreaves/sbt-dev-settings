@@ -1,43 +1,59 @@
+// GAV coordinates
 organization := "com.gonitro"
-
-name := "sbt-dev-settings"
-
-version := "0.2.1"
-
-sbtPlugin := true
-
-description := "sbt plugin for standardizing compilation, packaging, formatting, and publishing configurations"
+name         := "sbt-dev-settings"
+version      := "0.3.0"
 
 // sbt plugins must be at Scala 2.10.x
+//
 scalaVersion := "2.10.5"
+sbtPlugin    := true
+description  := "sbt plugin for standardizing compilation, packaging, formatting, and publishing configurations"
 
-// dependices for this plugin
 
-addSbtPlugin("com.danieltrinh" % "sbt-scalariform" % "1.4.0")
-
+// dependencies for this plugin
+//
+addSbtPlugin("com.danieltrinh"  % "sbt-scalariform"     % "1.4.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-git"             % "0.8.4")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.4")
+// scalariform format settings
+//
+//import scalariform.formatter.preferences._
+//
+//defaultScalariformSettings
+//
+//ScalariformKeys.preferences := ScalariformKeys.preferences.value
+//      .setPreference(AlignParameters, true)
+//      .setPreference(AlignSingleLineCaseStatements, true)
+//      .setPreference(CompactControlReadability, false)
+//      .setPreference(CompactStringConcatenation, true)
+//      .setPreference(DoubleIndentClassDeclaration, true)
+//      .setPreference(FormatXml, true)
+//      .setPreference(IndentLocalDefs, true)
+//      .setPreference(IndentPackageBlocks, true)
+//      .setPreference(IndentSpaces, 2)
+//      .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
+//      .setPreference(PreserveDanglingCloseParenthesis, true)
+//      .setPreference(PreserveSpaceBeforeArguments, false)
+//      .setPreference(RewriteArrowSymbols, false)
+//      .setPreference(SpaceBeforeColon, false)
+//      .setPreference(SpaceInsideBrackets, false)
+//      .setPreference(SpacesWithinPatternBinders, true)
 
 // publish settings
-
-publishMavenStyle := true
-
-publishTo := {
+//
+publishMavenStyle       := true
+publishMavenStyle       := true
+publishArtifact in Test := false
+pomIncludeRepository    := { _ => false }
+publishTo               := {
     val nexus = "https://oss.sonatype.org/"
     if (isSnapshot.value)
         Some("snapshots" at nexus + "content/repositories/snapshots")
     else
         Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
-
-publishMavenStyle := true
-
-publishArtifact in Test := false
-
-pomIncludeRepository := { _ => false }
-
-pomExtra := (
+pomExtra                := (
   <url>https://github.com/malcolmgreaves/sbt-dev-settings</url>
   <licenses>
     <license>

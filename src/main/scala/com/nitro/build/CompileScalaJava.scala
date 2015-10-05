@@ -1,7 +1,7 @@
 package com.nitro.build
 
 import sbt.Keys._
-import sbt.{SettingKey, Def, Setting}
+import sbt.{ SettingKey, Def, Setting }
 
 /**
  * Compilation settings for Scala and Java.
@@ -14,7 +14,8 @@ object CompileScalaJava {
     fatalWarnings: Boolean,
     logImplicits:  Boolean,
     optimize:      Boolean,
-    crossCompile:  Seq[String]
+    crossCompile:  Seq[String],
+    inlineWarn:    Boolean
   )
 
   object ScalaConfig {
@@ -26,9 +27,9 @@ object CompileScalaJava {
         fatalWarnings = true,
         logImplicits = false,
         optimize = true,
-        crossCompile = cross
+        crossCompile = cross,
+        inlineWarn = true
       )
-
   }
 
   case class IncConfig(
@@ -50,7 +51,7 @@ object CompileScalaJava {
     formatOnCompile:               Boolean,
     scala:                         ScalaConfig,
     inc:                           Option[IncConfig],
-    compileOptionOverrideToSimple: Boolean     = false
+    compileOptionOverrideToSimple: Boolean           = false
   )
 
   object Config {
@@ -77,9 +78,7 @@ object CompileScalaJava {
     val plugin =
       default.copy(scala =
         default.scala.copy(crossCompile =
-          Seq.empty[String]
-        )
-      )
+          Seq.empty[String]))
 
   }
 
@@ -90,11 +89,9 @@ object CompileScalaJava {
   def pluginSettings(c: Config = Config.plugin) = {
     scalaVersion := "2.10.5"
     val updatedC = c.copy(scala =
-      c.scala.copy(crossCompile = Seq.empty[String])
-    )
+      c.scala.copy(crossCompile = Seq.empty[String]))
     settings(updatedC) ++ Seq(sbtPlugin := true)
   }
-
 
   /**
    * Settings for doing library or application development
@@ -105,11 +102,9 @@ object CompileScalaJava {
    */
   def librarySettings(c: Config = Config.default) = {
     val updatedC = c.copy(scala =
-      c.scala.copy(crossCompile = ScalaConfig.cross)
-    )
+      c.scala.copy(crossCompile = ScalaConfig.cross))
     settings(updatedC) ++ Seq(crossScalaVersions := c.scala.crossCompile)
   }
-
 
   /**
    * Obtain settings for scalac and javac.
@@ -185,9 +180,7 @@ object CompileScalaJava {
           // Emit warnings when dead code is detected
           "-Ywarn-dead-code",
           // Emit warnings when non-unit values are discarded
-          "-Ywarn-value-discard",
-          // Emit warnings when things tagged @inline cannot be inlined
-          "-Yinline-warnings"
+          "-Ywarn-value-discard"
         )
 
       scalacOptions := options
@@ -205,9 +198,11 @@ object CompileScalaJava {
         // use an optimized bytecode generator
         // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
         .addOption(isScala211(scalaVersion.value), "-Ybackend:GenBCode")
+        // Emit warnings when things tagged @inline cannot be inlined
+        .addOption(c.scala.inlineWarn, "-Yinline-warnings")
     }
 
-  private[this] def isScala211(v:String):Boolean =
+  private[this] def isScala211(v: String): Boolean =
     v.startsWith("2.11.")
 
   /**
