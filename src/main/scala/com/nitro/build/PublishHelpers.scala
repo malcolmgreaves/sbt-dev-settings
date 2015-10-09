@@ -1,5 +1,6 @@
 package com.nitro.build
 
+import sbt._
 import scala.util.Try
 
 /**
@@ -159,6 +160,16 @@ object PublishHelpers {
         location = "http://choosealicense.com/licenses/no-license/",
         distribution = "repo"
       )
+  }
+
+  object Dev {
+
+    def github(id: String, name: String, email: String): Developer =
+      Developer(id, name, email, new URL("http", "github.com", s"/$id"))
+
+    def bitbucket(id: String, name: String, email: String): Developer =
+      Developer(id, name, email, new URL("http", "bitbucket.org", s"/$id"))
+
   }
 
 }
