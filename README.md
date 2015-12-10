@@ -60,7 +60,7 @@ Here's an example for configuring a `build.sbt` file:
     // Use `devConfig` to set the scalacOptions, javacOptions, and incOptions settings.
     scalaVersion := "2.11.7"
     CompileScalaJava.librarySettings(devConfig)
-    // `librarySettings` sets up cross compilation for 2.11.7 and 2.10.5.
+    // `librarySettings` sets up cross compilation for 2.11.7 and 2.10.6.
     // If doing plugin development, use `CompileScalaJava.pluginSettings`,
     // which ensures that we're using only 2.10 and not cross compiling.
     

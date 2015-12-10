@@ -15,12 +15,13 @@ object CompileScalaJava {
     logImplicits:  Boolean,
     optimize:      Boolean,
     crossCompile:  Seq[String],
-    inlineWarn:    Boolean
+    inlineWarn:    Boolean,
+    genBBackend:   Boolean
   )
 
   object ScalaConfig {
 
-    val cross = Seq("2.10.5", "2.11.7")
+    val cross = Seq("2.10.6", "2.11.7")
 
     val default: ScalaConfig =
       ScalaConfig(
@@ -28,7 +29,8 @@ object CompileScalaJava {
         logImplicits = false,
         optimize = true,
         crossCompile = cross,
-        inlineWarn = true
+        inlineWarn = true,
+        genBBackend = true
       )
   }
 
@@ -83,11 +85,11 @@ object CompileScalaJava {
   }
 
   /**
-   * [mutation!] Sets scalaVersion to 2.10.5
+   * [mutation!] Sets scalaVersion to 2.10.6
    * Ignores any crossCompile settings in the input Config, c.
    */
   def pluginSettings(c: Config = Config.plugin) = {
-    scalaVersion := "2.10.5"
+    scalaVersion := "2.10.6"
     val updatedC = c.copy(scala =
       c.scala.copy(crossCompile = Seq.empty[String]))
     settings(updatedC) ++ Seq(sbtPlugin := true)
@@ -98,7 +100,7 @@ object CompileScalaJava {
    * (scala 2.11 with base settings and cross-compilation to 2.10).
    *
    * Note. Unlike plugin(), this does not mutate scalaVersion. It does
-   * make sure that c.scala.crossCompile == (2.10.5, 2.11.7)
+   * make sure that c.scala.crossCompile == (2.10.6, 2.11.7)
    */
   def librarySettings(c: Config = Config.default) = {
     val updatedC = c.copy(scala =
@@ -197,7 +199,7 @@ object CompileScalaJava {
         .addOption(c.scala.logImplicits, "-Xlog-implicits")
         // use an optimized bytecode generator
         // only applicable in Scala 2.11 (not available in 2.10, default in 2.12)
-        .addOption(isScala211(scalaVersion.value), "-Ybackend:GenBCode")
+        .addOption(c.scala.genBBackend && isScala211(scalaVersion.value), "-Ybackend:GenBCode")
         // Emit warnings when things tagged @inline cannot be inlined
         .addOption(c.scala.inlineWarn, "-Yinline-warnings")
     }
