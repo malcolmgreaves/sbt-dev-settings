@@ -1,7 +1,7 @@
 // GAV coordinates
 organization := "com.gonitro"
 name         := "sbt-dev-settings"
-version      := "0.5.0"
+version      := "0.6.0"
 
 // sbt plugins must be at Scala 2.10.x
 //
@@ -15,6 +15,11 @@ description  := "sbt plugin for standardizing compilation, packaging, formatting
 addSbtPlugin("com.danieltrinh"  % "sbt-scalariform"     % "1.4.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-git"             % "0.8.4")
+
+// test dependencies
+//
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.2.6" % Test
+
 
 // publish settings
 //
@@ -74,13 +79,13 @@ ScalariformKeys.preferences := ScalariformKeys.preferences.value
       .setPreference(DoubleIndentClassDeclaration, true)
       .setPreference(FormatXml, true)
       .setPreference(IndentLocalDefs, true)
-     .setPreference(IndentPackageBlocks, true)
+      .setPreference(IndentPackageBlocks, true)
       .setPreference(IndentSpaces, 2)
-     .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
+      .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
       .setPreference(PreserveDanglingCloseParenthesis, true)
       .setPreference(PreserveSpaceBeforeArguments, false)
       .setPreference(RewriteArrowSymbols, false)
-     .setPreference(SpaceBeforeColon, false)
+      .setPreference(SpaceBeforeColon, false)
       .setPreference(SpaceInsideBrackets, false)
       .setPreference(SpacesWithinPatternBinders, true)
 */
