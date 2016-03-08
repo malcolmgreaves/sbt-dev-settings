@@ -1,7 +1,7 @@
 // GAV coordinates
 organization := "com.gonitro"
 name         := "sbt-dev-settings"
-version      := "0.6.0"
+version      := "0.6.1"
 
 // sbt plugins must be at Scala 2.10.x
 //
@@ -12,9 +12,9 @@ description  := "sbt plugin for standardizing compilation, packaging, formatting
 
 // dependencies for this plugin
 //
-addSbtPlugin("com.danieltrinh"  % "sbt-scalariform"     % "1.4.0")
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
-addSbtPlugin("com.typesafe.sbt" % "sbt-git"             % "0.8.4")
+addSbtPlugin("org.scalariform"  % "sbt-scalariform"     % "1.6.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.6")
+addSbtPlugin("com.typesafe.sbt" % "sbt-git"             % "0.8.5")
 
 // test dependencies
 //
