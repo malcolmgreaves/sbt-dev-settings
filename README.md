@@ -1,5 +1,5 @@
 # sbt-dev-settings #
-[![Build Status](https://travis-ci.org/Nitro/sbt-dev-settings.svg?branch=master)](https://travis-ci.org/Nitro/sbt-dev-settings) [![Codacy Badge](https://api.codacy.com/project/badge/54e884abc2f641b6bac0e22029c3366e)](https://www.codacy.com/app/Nitro/sbt-dev-settings) [![Join the chat at https://gitter.im/Nitro/sbt-dev-settings](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Nitro/sbt-dev-settings?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Stories in Ready](https://badge.waffle.io/Nitro/sbt-dev-settings.png?label=ready&title=Ready)](https://waffle.io/Nitro/sbt-dev-settings) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.gonitro/sbt-dev-settings/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.gonitro/sbt-dev-settings)
+[![Build Status](https://travis-ci.org/malcolmgreaves/sbt-dev-settings.svg?branch=master)](https://travis-ci.org/malcolmgreaves/sbt-dev-settings) [![Codacy Badge](https://api.codacy.com/project/badge/54e884abc2f641b6bac0e22029c3366e)](https://www.codacy.com/app/malcolmgreaves/sbt-dev-settings) [![Join the chat at https://gitter.im/malcolmgreaves/sbt-dev-settings](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/malcolmgreaves/sbt-dev-settings?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Stories in Ready](https://badge.waffle.io/malcolmgreaves/sbt-dev-settings.png?label=ready&title=Ready)](https://waffle.io/malcolmgreaves/sbt-dev-settings) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.gonitro/sbt-dev-settings/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.gonitro/sbt-dev-settings)
 
 ### What is this?
 
@@ -102,31 +102,31 @@ Where `X.Y.Z` is the most recent one from [sonatype](https://oss.sonatype.org/co
 
 ### Deeper Dive: Build Settings
 
-#### [Compile](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CompileScalaJava.scala)
+#### [Compile](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/CompileScalaJava.scala)
 
 Scala version & compiler settings
 
-#### [Docker](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Docker.scala)
+#### [Docker](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/Docker.scala)
 
 Docker publishing settings.
 
-#### [sbt-git](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/SbtGit.scala)
+#### [sbt-git](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/SbtGit.scala)
 
 sbt-git versioning settings.
 
-#### [Publish](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Publish.scala)
+#### [Publish](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/Publish.scala)
 
-Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/PublishHelpers.scala).
+Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/PublishHelpers.scala).
 
-#### [Runtime](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/JvmRuntime.scala)
+#### [Runtime](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/JvmRuntime.scala)
 
 Settings for the Java runtime. Includes Java version 6, 7, and 8.
 
-#### [Format](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CodeFormat.scala)
+#### [Format](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/CodeFormat.scala)
 
 Code formatting settings using scalarifom.
 
-#### [Dependencies](https://github.com/Nitro/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Dependencies.scala)
+#### [Dependencies](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/Dependencies.scala)
 
 Common dependencies for fundamental things, e.g. logging and testing.
 
