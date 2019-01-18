@@ -136,7 +136,7 @@ We welcome all pull requests! We <3 this software; we want it to be used and be 
 
 ### License
 
-Copyright 2015 Nitro Software, Inc.
+Copyright 2015- Malcolm Greaves
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
