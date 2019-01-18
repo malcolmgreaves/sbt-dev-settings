@@ -102,31 +102,31 @@ Where `X.Y.Z` is the most recent one from [sonatype](https://oss.sonatype.org/co
 
 ### Deeper Dive: Build Settings
 
-#### [Compile](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/CompileScalaJava.scala)
+#### [Compile](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CompileScalaJava.scala)
 
 Scala version & compiler settings
 
-#### [Docker](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/Docker.scala)
+#### [Docker](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Docker.scala)
 
 Docker publishing settings.
 
-#### [sbt-git](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/SbtGit.scala)
+#### [sbt-git](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/SbtGit.scala)
 
 sbt-git versioning settings.
 
-#### [Publish](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/Publish.scala)
+#### [Publish](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Publish.scala)
 
-Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/PublishHelpers.scala).
+Publishing to your own Artifactory, Nexus, or other Maven-compatiable jar storage. Depends on types defined in [PublishHelpers](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/PublishHelpers.scala).
 
-#### [Runtime](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/JvmRuntime.scala)
+#### [Runtime](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/JvmRuntime.scala)
 
 Settings for the Java runtime. Includes Java version 6, 7, and 8.
 
-#### [Format](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/CodeFormat.scala)
+#### [Format](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/CodeFormat.scala)
 
 Code formatting settings using scalarifom.
 
-#### [Dependencies](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/malcolmgreaves/build/Dependencies.scala)
+#### [Dependencies](https://github.com/malcolmgreaves/sbt-dev-settings/blob/master/src/main/scala/com/nitro/build/Dependencies.scala)
 
 Common dependencies for fundamental things, e.g. logging and testing.
 
